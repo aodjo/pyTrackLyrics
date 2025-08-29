@@ -101,11 +101,11 @@ class Vibe:
         elif resultType == -1:
             return False, None
     
-    def getTrackLyrics(self, trackId):
+    def getTrackLyrics(self, trackId, syncOnly=None, normalOnly=None):
         """트랙의 가사를 가져오는 함수입니다.
             가사의 우선순위는 synced를 우선으로 반환합니다.
         
-            **Argument:** trackId (int)
+            **Argument:** trackId (int), syncOnly (Boolen, Optional), normalOnly (Boolen, Optional)
 
             **Return:** 가사 존재 여부 (boolen), 가사 타입 (str | None, "normal"/"synced" | None), 가사 (str | None)
         """
@@ -120,14 +120,30 @@ class Vibe:
         hasNormalLyric = True if lyricsValue["hasNormalLyric"] == "true" else False 
         hasSyncLyric = True if lyricsValue["hasSyncLyric"] == "true" else False 
 
-        if hasSyncLyric:
-            lyrics = self.formatLyrics(lyricsValue["syncLyric"])
-            return True, "synced", lyrics
-        elif hasNormalLyric:
-            lyrics = lyricsValue["normalLyric"]["text"]
-            return True, "normal", lyrics
-        else:
-            return False, None, None
+        if syncOnly and normalOnly:
+            raise ValueError("syncOnly와 normalOnly는 함께 사용할 수 없습니다.")
+
+        elif not syncOnly and not normalOnly:
+            if hasSyncLyric:
+                lyrics = self.formatLyrics(lyricsValue["syncLyric"])
+                return True, "synced", lyrics
+            elif hasNormalLyric:
+                lyrics = lyricsValue["normalLyric"]["text"]
+                return True, "normal", lyrics
+            else:
+                return False, None, None
+        elif syncOnly:
+            if hasSyncLyric:
+                lyrics = self.formatLyrics(lyricsValue["syncLyric"])
+                return True, "synced", lyrics
+            else:
+                return False, None, None
+        elif normalOnly:
+            if hasNormalLyric:
+                lyrics = lyricsValue["normalLyric"]["text"]
+                return True, "normal", lyrics
+            else:
+                return False, None, None
 
 if __name__ == "__main__":
     vibe = Vibe("lrc")
