@@ -20,7 +20,7 @@ class Vibe:
 
         **Return:** 포멧된 가사 (str)
         """
-        
+
         if lyricsType in ["json", "lrc", None]:
             returnType = None
             if lyricsType:
@@ -31,9 +31,15 @@ class Vibe:
                 returnType = "lrc"
 
 
-            if returnType == "json":
-                start_times = lyrics_json['startTimeIndex']['startTimeIndex']
+            start_times = lyrics_json['startTimeIndex']['startTimeIndex']
+            lyrics = None
+            
+            if type(lyrics_json["contents"]["contents"]) == dict:
+                lyrics = lyrics_json['contents']['contents']['text']['text']
+            else:
                 lyrics = lyrics_json['contents']['contents'][0]['text']['text']
+
+            if returnType == "json":
 
                 formatted_list = []
                 for start_time_str, text in zip(start_times, lyrics):
@@ -49,9 +55,6 @@ class Vibe:
 
                 return json.dumps(formatted_list, ensure_ascii=False)
             elif returnType == "lrc":
-                start_times = lyrics_json['startTimeIndex']['startTimeIndex']
-                lyrics = lyrics_json['contents']['contents'][0]['text']['text']
-
                 if len(start_times) != len(lyrics):
                     raise ValueError("시작 시간과 가사 라인의 개수가 일치하지 않습니다.")
 
@@ -127,8 +130,8 @@ class Vibe:
             return False, None, None
 
 if __name__ == "__main__":
-    vibe = Vibe("json")
+    vibe = Vibe("lrc")
 
-    success, result = vibe.getTrackId("문득 BE'O")
+    success, result = vibe.getTrackId("이무진 청춘만화")
     print(vibe.getTrackLyrics(result))
 
