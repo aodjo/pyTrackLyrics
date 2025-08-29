@@ -45,7 +45,6 @@ class Lyrics:
 
 
 
-
 if __name__ == "__main__":
     lyrics = Lyrics("청춘만화", "이무진")
     a = lyrics.getSyncedLyrics()

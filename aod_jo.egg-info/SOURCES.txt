@@ -1,0 +1,6 @@
+README.md
+setup.py
+aod_jo.egg-info/PKG-INFO
+aod_jo.egg-info/SOURCES.txt
+aod_jo.egg-info/dependency_links.txt
+aod_jo.egg-info/top_level.txt
